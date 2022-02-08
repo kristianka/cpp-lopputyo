@@ -1,6 +1,7 @@
 ﻿// hotellityo.cpp : This file contains the 'main' function. Program execution begins and ends there.
 // kristian kähkönen, 21tietoB
-
+// made in 2021 and translated to english in 2022
+// 
 // time used: 26 hours
 
 #include <iostream>
@@ -24,27 +25,27 @@ struct Customer {
 };
 
 Customer customerInfo(Customer *a, int randomNumber);
-int search(Customer *a);                               // haetaan varattua huonetta käyttäjän nimellä
-int printInfo(Customer *a, int input);                // tulostetaan asiakkaan tiedot
-bool nameCheck(string name);                    // tarkistetaan että pelkkiä kirjaimia
-bool numberValidation(int number);                   // tarkistetaan että pelkkiä numeroita
+int search(Customer *a);                               // search the room with inputted name
+int printInfo(Customer *a, int input);                // print customer info
+bool nameCheck(string name);                         // let's check that only letters are inputted
+bool numberValidation(int number);                  // only numbers
 
 
+// I made that this program should run on any operating system, so there's no windows commands to clear cmd,
+// like system("cls"). This program could've been modularized more, but it works.
+// I also overengireed some parts, like to check if user inputs and number. I could've just used an integer, and if it failed, ask again.
+// To save memory, I could've used reference parameters and not copy the arrays each time.
+// the rooms aren't 50 - 50 split like in assignment. 
+// rooms 40 - 169 are one bed rooms, and rooms 170 - 300 are two bed rooms.
 
-// panostin että ohjelma toimii kaikilla käyttöjärjestelmillä, jonka takia en käytä system("cls") -komentoa.
-// käytän vain paljon endl. ei ole yhtä hieno, mutta toimii myös linuxilla ja macilla nyt.
-// ohjelman olisi voinut modularisoida ehkä enemmän alaohjelmiin, esimerkiksi jotkin syötteet.
-// huoneet eivät ole täydellisesti 50-50 vapaana, 40-169 ovat yhden hengen, huoneet 170 - 300 ovat kahden.
-// ohjelma sisältää paljon logiikkaa, jonka takia koodi on pitkä.
+// addons, that I added:
+// I cleaned a ton of couts, for example in search() function.
+// when you press 3 on menu, it shows every room's customer's name for debug purposes.
+// the program also randomizes a pin code for the room between 2999 - 9999.
 // 
-// lisäosia, jotka itse lisäsin:
+// I'm very pleased with this project and hope to get grade 5.
+// edit: I got grade 5, which is the best one. :)
 // 
-// yleisesti tulostuksia hifistelty, esimerkiksi search() funktiossa.
-// kun menussa painaa 3, näyttää jokaisen huoneen varajaan nimen. debug tarkoituksiin tottakai,
-// aika iso tietoturvapuute jos aidossa varausjärjestelmässä olisi sellainen. :D
-// lisäksi ohjelma arvoo pinCoden huoneelle väliltä 2999 - 9999
-// 
-// olen tyytyväinen projektiin itse, toivon tästä arvosanaa 5. panostin tähän paljon aikaa.
 
 
 
@@ -56,15 +57,15 @@ int main()
 
     bool error;
     char input;
-    int max = 150; // jaettuna kahdella jotta saadaan parillinen randomNumber
-    int min = 20; // jaettuna kahdella jotta saadaan parillinen randomNumber
+    int max = 150; // max rooms are 300, but divided by two so we get an even number.
+    int min = 20; // min rooms are 40, but divided by two so we get an even number.
     int randomReservation = rand() % ROOMS + 1;
     int freeRooms = 2*(rand() % (max - min + 1) + min);
     int reservedRooms = ROOMS - freeRooms;
 
+    // let's randomize an X amount of rooms that are reserved. If room is already reserved, let's randomize again.
+    // this part of the code is not in the loop, so it runs only once.
 
-    // arvotaan randomNumber kappaletta huoneita jotka varataan. jos huone on jo varattu, niin arvotaan uusiksi.
-    // tämä osuus käy  vain kerran. ei ole menu loopin sisällä.
 
     for (int i = 40; i < 170; i++)
     {
@@ -79,7 +80,7 @@ int main()
     for (int i = 0; i < 40; i++)
         a[i].check = true;
 
-    // täytetään satunnaisia huoneita
+    // let's fill random rooms
     for (int i = 0; i < reservedRooms; i++)
     {
         int x = rand() % 299 + 1;
@@ -93,22 +94,22 @@ int main()
         }
     }
 
-
+    // menu 
     do {
         cout << "-----------------------------------------------------------" << endl;
-        cout << "| Tervetuloa hotellihuoneen varausohjelmaan.              |" << endl;
-        cout << "| Mitä haluaisit tehdä? (Syötä number 1-4)                |" << endl;
-        cout << "| 1: Varaa huone                                          |" << endl;
-        cout << "| 2: Hae varausta nimellä                                 |" << endl;
-        cout << "| 3: Näytä varattujen huoneiden nimet                     |" << endl;
-        cout << "| 4: Sammuta ohjelma                                      |" << endl;
+        cout << "| Welcome to the reservation system of our hotel.         |" << endl;
+        cout << "| What would you like to do? (Input a number 1-4)         |" << endl;
+        cout << "| 1: Reserve a room                                       |" << endl;
+        cout << "| 2: Search a reservation by name                         |" << endl;
+        cout << "| 3: Show reserved rooms and their customers              |" << endl;
+        cout << "| 4: Turn off the program                                 |" << endl;
         cout << "-----------------------------------------------------------" << endl;
 
         do
         {
             error = false;
             cin >> input;
-            // katsotaan että syöte saa olla vain 1 - 4
+            // let's check input can be only 1 to 4
             if (input != '1' && input != '2' && input !='3' && input != '4'  ) 
             {
                 cin.ignore();
@@ -121,8 +122,7 @@ int main()
         switch (input)
         {
         case '1': {
-
-            // otetaan asiakaan tiedot ylös, lähetetään sinne taulukko ja vapaat huoneet määrä
+            // collect customer information. send array and amount of free rooms
             customerInfo(a, freeRooms); 
             break;
         }
@@ -132,17 +132,17 @@ int main()
             break;
         }
         case '3': {
-            // debug tarkoitukseen, näyttää jokaisen huoneen varaajan nimen
+            // for debugging, show every customers' name
             cout << "Valitsit 3" << endl << endl;
             int laskin = 0;
             for (int i = 0; i < ROOMS; i++) {
                 if (a[i].reservationNum != 0)
                 {
-                    cout << "Huoneessa " << a[i].roomNum << " vierailee Customer " << a[i].name << endl;
+                    cout << "In the room " << a[i].roomNum << " visits " << a[i].name << endl;
                     laskin++;
                 }
                 if (i == 299 && laskin == 0) 
-                    cout << "Kukaan ei ole varannut huonetta.";
+                    cout << "Nobody has reserved this room.";
             }
 
             cout << endl << endl; 
@@ -153,7 +153,7 @@ int main()
         }
     }
     } while (input != '4');
-    cout << "Kiitos ohjelman käytöstä. Tervetuloa uudelleen!";
+    cout << "Thank you for using our system. We welcome you back again!" << endl;
     return 0;
 }
 
@@ -181,7 +181,7 @@ Customer customerInfo(Customer* a, int randomNumber) {
     cout << endl << "Haluatko valita itse huoneen, vai haluatko satunnaisen huoneen?" << endl;
     cout << "Jos haluat päättää itse, syötä 1. Jos haluat satunnaisen, syötä 2." << endl;
 
-    // syötteen varmistus
+    // input validation
     do
     {
         error = false;
