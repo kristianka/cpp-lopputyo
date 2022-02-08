@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// translate to english
+
 const int HUONEMAARA = 300;
 
 struct Asiakas {
